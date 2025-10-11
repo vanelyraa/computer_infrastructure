@@ -1,1 +1,5 @@
 ipython
+matplotlib
+numpy
+pandas
+yfinance
