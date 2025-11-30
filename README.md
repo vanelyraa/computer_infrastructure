@@ -9,7 +9,7 @@
  - [Implementations](#implementations)
     - [Problem 1](#problem-1-data-from-yfinance)
     - [Problem 2](#problem-2-plotting-data)
-    - [Problem 3](#problem-3-script)
+    - [Problem 3](#problem-3-script) & [script](faang.py)
     - [Problem 4](#problem-4-automation)
  - [Bibliografy](#bibliografy)
 
@@ -57,6 +57,18 @@ Install required dependencies:
 ## Implementations
 
 #### Problem 1: Data from yfinance
+
+The get_data() function is responsible for downloading stock data for five major tecnology companies:Facebook, Apple, Amazon, Netflix and Google from yfincance, store the data in a timestamped .csv file 
+
+A list called 'tickers' is defined with the tickers from the five companies to be analysed. A ticker is an abbreviation  that uniquely identifies a company.
+A dictionary called 'stocks_data' is created and used to store data fetched for each ticker.
+
+The function loops through each of the tickers and downloads it's hourly stock data, from the previous 5 days from Yahoo Finance
+
+The data is stored in a [DataFrame](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html) columns containing close, high, low, open and volume values and rows each timestamp
+
+The datetime is converted into a column as they are stored as in index in YFinance, the conversion is done for easy data manipulation.
+
 #### Problem 2: Plotting Data
 #### Problem 3: Script
 #### Problem 4: Automation
