@@ -39,9 +39,6 @@ def get_data(): #Defining function
     # Creting CSV file with required naming format and current time
     all_data.to_csv("data/" + now.strftime("%Y%m%d-%H%M%S") + ".csv", index=False) 
     
-# Run the function
-get_data()
-
 def plot_data():
 
     path = "data"
@@ -83,8 +80,6 @@ def plot_data():
     plt.savefig(save_path)
     plt.close()
     
-
-plot_data()
 
 def main():
     #Calling functions to be executed
