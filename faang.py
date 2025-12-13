@@ -93,3 +93,4 @@ if __name__ == "__main__": #this function make sure the code is executed if the 
 # https://dev.to/devasservice/execute-python-with-shebang-make-your-scripts-executable-17f2 #Running script
 # https://www.geeksforgeeks.org/python/run-function-from-the-command-line-in-python/ #Calling functions in script
 # https://realpython.com/if-name-main-python/  #If name function
+# https://phoenixnap.com/kb/chmod-755 User permissions
