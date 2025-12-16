@@ -7,62 +7,81 @@ import os
 import datetime as dt
 import matplotlib.pyplot as plt
 
+# List tickers 
+tickers = ["META", "AAPL", "AMZN", "NFLX", "GOOG"]
 
+# Defining function
+def get_data(): 
 
-def get_data(): #Defining function
-
-    tickers = ['META', 'AAPL', 'AMZN', 'NFLX', 'GOOG']
-
+    # Dictionary to store stock data
     stocks_data = {}
-    #List with the five stock tickers
-    
-    # Looping through tickers
-    for ticker in tickers:
-
         
+    # Looping through tickers
+    for ticker in tickers:  
         
         # Fetching data with custom interval, hourly data, previous five days
-        df = yf.download(ticker, period='5d', interval='1h', auto_adjust = False)
-       # print(df) checking how data if printed
+        df = yf.download(ticker, period="5d", interval="1h", auto_adjust = False)
+       
+        # print(df) checking how data if printed (debugging)
 
-        # Converting datetime from an index to a column, for better visualization
+        # Converting datetime from an index to a column, for better visualization and analysis
         df.reset_index(inplace=True)
-        #print(df) checking how data is printed after setting datetime to a column
 
+        #print(df) checking how data is printed after setting datetime to a column (debugging)
 
+        # Storing each stock's DataFrame in a dictionary using the ticker name
         stocks_data[ticker] = df
                  
-    # Current time
+    # Fetching current time
     now = dt.datetime.now()
 
+    # Storing csv naming format and current time to a variable
+    filename = now.strftime("%Y%m%d-%H%M%S") + ".csv"
+
+    # Creating data folder if it doesn't exist
+    if not os.path.exists("data"):
+        os.makedirs("data")  
+
+    # Concatenate all stocks data side by side in one table
+    # stocks_data.values() fetch all DF saved in dictionary
+    # axis = 1: join columns horizontally left to right
     all_data = pd.concat(stocks_data.values(), axis=1)
-    # Creting CSV file with required naming format and current time
-    all_data.to_csv("data/" + now.strftime("%Y%m%d-%H%M%S") + ".csv", index=False) 
+
+    # Creating CSV file with required naming format and current time
+    all_data.to_csv("data/" + filename, index=False) 
     
+   
 def plot_data():
 
+    # Storing path - data folder - into a variable to be reused multiple times without the need of typing folder path, or in case path changes
+    # it only need to be updated once in the function
     path = "data"
 
-    # Find all .csv files in the folder
+    # Creating plots folder if it doesn't exist
+    if not os.path.exists("plots"):
+        os.makedirs("plots")
+
+    # Find all CSV files in the folder
     csv_files = [x for x in os.listdir(path) if x.endswith(".csv")]
 
-    # Find the most recent CSV file by modification time
-    recent_csv = max(csv_files, key=lambda x: os.stat(os.path.join(path, x)).st_mtime)
-    
-    #Joining folder and file to create the full file path for functions
+    # Sorting CSV files by filename showing newest first, inspiration from lecture
+    csv_files.sort(reverse=True)
+
+    # Latest file, inspiration from lecture
+    recent_csv = csv_files[0]
+
+    # Joining folder and file to create the full file path for functions
     latest_path = os.path.join(path, recent_csv)
 
-    # Reading CSV and converting to Dataframe, header has two rows for plotting reference
+    # Reading CSV and converting to Dataframe, header has two rows for plotting reference (multi level indexing)
     df = pd.read_csv(latest_path, header=[0, 1])
 
-    #Converting first column with dates to Datetime
+    # Converting first column with dates to Datetime
     datetime_column = df.columns[0]
     df[datetime_column] = pd.to_datetime(df[datetime_column])
     
-    #Defining tickers to be plotted
-    tickers = ['META', 'AAPL', 'AMZN', 'NFLX', 'GOOG']
-
-    plt.figure(figsize=(14, 6)) # making plot wider for better visualization
+    # Making plot wider for better visualization
+    plt.figure(figsize=(14, 6)) 
 
     # Plot Close prices for each ticker, looping through each ticker 
     for ticker in tickers:
@@ -74,13 +93,12 @@ def plot_data():
     plt.title('Close prices')
     plt.legend()
 
-      # Saving plot to 'plots' folder
-    timestamp = dt.datetime.now().strftime("%Y%m%d-%H%M%S")
-    save_path = os.path.join("plots", f"{timestamp}.png")
-    plt.savefig(save_path)
+      # Saving plot to 'plots' folder, ensuring CSV and PNG files have the same timestamp
+    plot_filename = recent_csv.replace('.csv', '.png')
+    save_path = os.path.join("plots", plot_filename)
+    plt.savefig(save_path, dpi=300)
     plt.close()
     
-
 def main():
     #Calling functions to be executed
     get_data()
